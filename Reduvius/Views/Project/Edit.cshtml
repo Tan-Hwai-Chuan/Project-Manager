@@ -1,0 +1,28 @@
+﻿@model ProjectViewModel
+
+@{
+}
+
+
+<div>
+    <form asp-controller="Project" asp-action="Edit" method="post">
+        <input asp-for="ProjectId" type="hidden" />
+        <input asp-for="CreatedDate" type="hidden" />
+        <input asp-for="UpdatedDate" type="hidden" />
+        <div>
+            <label>Title</label>
+            <input asp-for="Title" />
+        </div>
+        @if (Model.ProjectId is not 0)
+        {
+            <div>
+                <label>Status</label>
+                <select asp-for="State">
+                    <option value="0">Complete</option>
+                    <option value="1">Incomplete</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        }
+    </form>
+</div>

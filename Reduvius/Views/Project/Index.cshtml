@@ -1,0 +1,142 @@
+﻿@model IEnumerable<Project>
+
+@{
+}
+
+
+<div class="container-fluid">
+    <div class="row h-75" style="max-height: 600px;">
+
+        <div class="list-group mb-3 col-8" style="height:500px; overflow-y: auto;">
+            <div class="list-group-item bg-primary text-white">
+                <h2>Projects</h2>
+            </div>
+            @{
+                int miniNum = 0;
+                int totalMiniNum = 0;
+            }
+            @foreach (var project in Model)
+            {
+                miniNum = project.Minis.Count();
+                totalMiniNum = totalMiniNum + miniNum;
+                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                    <a asp-controller="Project" asp-action="Project" asp-route-projectId="@project.ProjectId" class="d-flex w-100 justify-content-between text-decoration-none text-body">
+                        <h4 class="mb-1">@project.Title</h4>
+                        <div class="d-flex flex-column text-right">
+                            <small>Last Modified: @project.UpdatedDate</small>
+                            <small>@project.State</small>
+                        </div>
+                    </a>
+                    <div class="d-flex w-100 flex-row-reverse mt-1">
+                        <a type="button" asp-controller="Project" asp-action="Remove" asp-route-projectId="@project.ProjectId" class="btn btn-danger btn-primary">Delete</a>
+                    </div>
+                </div>
+
+            }
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <button onclick="hideShowToggle('addProject')" class="btn mb-2">Add Project</button>
+
+                <div id="addProject" style="display: none">
+                    @{
+                        await Html.RenderPartialAsync("Edit", new ProjectViewModel { });
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="list-group col-4 p-0" style="max-height:500px; overflow-y: auto;">
+            <div class="list-group-item bg-primary text-white">
+                <h2>To-do</h2>
+            </div>
+            @{
+                int bugNum = 0;
+                int totalBugNum = 0;
+            }
+            @foreach (var project in Model)
+            {
+                @foreach (var mini in project.Minis)
+                {
+                    bugNum = mini.Bugs.Count();
+                    totalBugNum = totalBugNum + bugNum;
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <a asp-controller="Mini" asp-action="Edit" asp-route-miniId="@mini.MiniId"
+                           class="d-flex w-100 justify-content-between text-decoration-none text-body">
+                            <h4 class="mb-1">@mini.Title</h4>
+                            <div class="d-flex flex-column text-right">
+                                <small>Last Modified: @mini.UpdatedDate</small>
+                                <small>@mini.State</small>
+                            </div>
+                        </a>
+                        <p>@mini.Description</p>
+                        <div class="d-flex w-100 flex-row-reverse mt-1">
+                            <a type="button" asp-controller="Mini" asp-action="Remove" asp-route-miniId="@mini.MiniId" class="btn btn-danger btn-primary">Delete</a>
+                        </div>
+                    </div>
+
+                }
+
+            }
+
+        </div>
+    </div>
+    <div class="row h-25">
+        <h1>Project Count: @Model.Count()</h1>
+        <h1>To-Do Count: @totalMiniNum</h1>
+        <h1>Bug Count: @totalBugNum</h1>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+@*<div>
+        <table class="table">
+            <thead>
+                Projects
+            </thead>
+            @foreach (var project in Model)
+            {
+                <tr>
+                    <th>
+                        @project.ProjectId
+                        @project.Title
+                        @project.CreatedDate
+                        @project.UpdatedDate
+                        @project.State
+                    </th>
+                </tr>
+            }
+        </table>
+    </div>*@
+
+@*<div>
+        <ul>
+            @foreach (var project in Model)
+            {
+                <li>
+                    @project.ProjectId
+                </li>
+                <li>
+                    @project.Title
+                </li>
+                <li>
+                    @project.CreatedDate
+                </li>
+                <li>
+                    @project.UpdatedDate
+                </li>
+                <li>
+                    @project.State
+                </li>
+                <a asp-controller="Project" asp-action="Remove" asp-route-projectId="@project.ProjectId">Delete</a>
+                <a asp-controller="Project" asp-action="Edit" asp-route-projectId="@project.ProjectId">Edit</a>
+            }
+        </ul>
+    </div>*@

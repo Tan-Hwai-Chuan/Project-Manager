@@ -1,0 +1,107 @@
+﻿@model Project
+
+
+
+@{
+}
+
+<div>
+    <h3 class="mb-1">@Model.Title</h3>
+    <div class="d-flex flex-column text-right">
+        <a asp-controller="Project" asp-action="edit" asp-route-projectId="@Model.ProjectId"><i class="bi bi-pencil-fill"></i></a>
+        <small>Last Modified: @Model.UpdatedDate</small>
+        <small>@Model.State</small>
+    </div>
+    <div class="d-flex w-100 flex-row-reverse mt-1">
+        <a type="button" asp-controller="Project" asp-action="Remove" asp-route-projectId="@Model.ProjectId" class="btn btn-danger btn-primary">Delete</a>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row h-75" style="max-height: 600px;">
+
+        <div class="list-group my-3 col-8" style="height:500px; overflow-y: auto;">
+            <div class="list-group-item bg-primary text-white">
+                <h2>To-do</h2>
+            </div>
+            @{ 
+                int bugNum = 0;
+                int totalBugNum = 0;
+            }
+            @foreach (var mini in Model.Minis)
+            {
+                bugNum = mini.Bugs.Count();
+                totalBugNum = totalBugNum + bugNum;
+                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between text-decoration-none text-body">
+                        <h4 class="mb-1">@mini.Title</h4>
+                        <div class="d-flex flex-column text-right">
+                            <small>Last Modified: @mini.UpdatedDate</small>
+                            <small>@mini.State</small>
+                            <a asp-controller="Mini" asp-action="Edit" asp-route-miniId="@mini.MiniId"><i class="bi bi-pencil-fill"></i></a>
+                        </div>
+                    </div>
+                    <p>@mini.Description</p>
+                    <div class="d-flex w-100 justify-content-between mt-1">
+                        <small>To-Do Id: @mini.MiniId</small>
+                        <a type="button" asp-controller="Mini" asp-action="Remove" asp-route-miniId="@mini.MiniId" class="btn btn-danger btn-primary">Delete</a>
+                    </div>
+                </div>
+            }
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <button onclick="hideShowToggle('addMini')" class="btn mb-2">Add TO-DO</button>
+
+                <div id="addMini" style="display: none">
+                    @{
+                        await Html.RenderPartialAsync("_AddMini", new MiniViewModel { ProjectId = Model.ProjectId });
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <div class="list-group my-3 col-4" style="height:500px; overflow-y: auto;">
+            <div class="list-group-item bg-primary text-white">
+                <h2>Bugs</h2>
+            </div>
+            @foreach (var mini in Model.Minis)
+            {
+                foreach (var bug in mini.Bugs)
+                {
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between text-decoration-none text-body">
+                            <h4 class="mb-1">@bug.Title</h4>
+                            <div class="d-flex flex-column text-right">
+                                <small>Last Modified: @bug.UpdatedDate</small>
+                                <small>@bug.State</small>
+                                <a asp-controller="Bug" asp-action="Edit" asp-route-bugId="@bug.MiniId"><i class="bi bi-pencil-fill"></i></a>
+                            </div>
+                        </div>
+                        <p>@bug.Description</p>
+                        <div class="d-flex w-100 flex-row-reverse mt-1">
+                            <a type="button" asp-controller="Bug" asp-action="Remove" asp-route-bugId="@bug.MiniId" class="btn btn-danger btn-primary">Delete</a>
+                        </div>
+                    </div>
+                }
+            }
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <button onclick="hideShowToggle('addBug')" class="btn mb-2">Add Bug</button>
+
+                <div id="addBug" style="display: none">
+                    @{
+                        await Html.RenderPartialAsync("_AddBug", new BugViewModel { });
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row h-25 list-group">
+    <div class="list-group-item bg-primary text-white">
+        <h2>Dashboard</h2>
+    </div>
+    <h1>To-Do Count: @Model.Minis.Count()</h1>
+    <h1>Bug Count: @totalBugNum</h1>
+</div>
+
